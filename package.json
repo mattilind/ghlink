@@ -3,7 +3,12 @@
   "displayName": "GitHub Link",
   "description": "Generate GitHub links for selected lines and copy to clipboard",
   "version": "0.0.1",
+  "publisher": "mattilind",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mattilind/ghlink.git"
+  },
   "engines": {
     "vscode": "^1.74.0",
     "node": ">=24.0.0"

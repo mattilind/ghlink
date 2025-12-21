@@ -1,3 +1,3 @@
-# ghlink
+# GitHub Link (ghlink)
 
 ## [unreleased]

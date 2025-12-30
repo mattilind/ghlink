@@ -1,0 +1,67 @@
+{
+  "name": "ghlink",
+  "displayName": "GitHub Link",
+  "description": "Generate GitHub links for selected lines and copy to clipboard",
+  "version": "1.0.0",
+  "publisher": "mattilind",
+  "icon": "images/icon.png",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mattilind/ghlink.git"
+  },
+  "engines": {
+    "vscode": "^1.75.0",
+    "node": ">=24.0.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ghlink.copyLink",
+        "title": "Copy GitHub Link"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "ghlink.copyLink",
+          "group": "navigation",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "GitHub Link",
+      "properties": {
+        "ghlink.remoteName": {
+          "type": "string",
+          "default": "origin",
+          "description": "Name of the Git remote to use for generating GitHub links. Leave empty to auto-detect."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "24.x",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "simple-git": "^3.16.0"
+  }
+}

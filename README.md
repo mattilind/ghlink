@@ -7,7 +7,6 @@ A simple VSCode/Windsurf extension that generates GitHub links for selected line
 - Generate GitHub links for the currently selected line(s) in your editor
 - Automatically copies the link to your clipboard
 - Works with single lines or line ranges
-- Supports both HTTPS and SSH remote URLs
 - Smart remote detection: automatically uses the GitHub remote if only one exists
 - Configurable remote name for repositories with multiple remotes
 
@@ -18,11 +17,7 @@ A simple VSCode/Windsurf extension that generates GitHub links for selected line
 2. Right-click to open the context menu
 3. Click "Copy GitHub Link"
 
-### Method 2: Keyboard Shortcut
-- **Windows/Linux**: `Ctrl+Shift+G`
-- **macOS**: `Cmd+Shift+G`
-
-### Method 3: Command Palette
+### Method 2: Command Palette
 1. Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`)
 2. Type "Copy GitHub Link"
 3. Press Enter

@@ -4,6 +4,7 @@
   "description": "Generate GitHub links for selected lines and copy to clipboard",
   "version": "0.0.1",
   "publisher": "mattilind",
+  "icon": "images/icon.png",
   "license": "MIT",
   "repository": {
     "type": "git",

@@ -2,7 +2,7 @@
   "name": "ghlink",
   "displayName": "GitHub Link",
   "description": "Generate GitHub links for selected lines and copy to clipboard",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "publisher": "mattilind",
   "icon": "images/icon.png",
   "license": "MIT",

@@ -17,9 +17,6 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:ghlink.copyLink"
-  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -36,6 +33,16 @@
           "when": "editorHasSelection"
         }
       ]
+    },
+    "configuration": {
+      "title": "GitHub Link",
+      "properties": {
+        "ghlink.remoteName": {
+          "type": "string",
+          "default": "origin",
+          "description": "Name of the Git remote to use for generating GitHub links. Leave empty to auto-detect."
+        }
+      }
     }
   },
   "scripts": {

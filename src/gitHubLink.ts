@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as vscode from 'vscode';
 import { simpleGit, SimpleGit, RemoteWithRefs } from 'simple-git';
 
 /**
@@ -16,11 +17,58 @@ interface GitHubInfo {
 }
 
 /**
+ * Finds the appropriate GitHub remote from available remotes.
+ * 
+ * @param remotes - Array of Git remotes
+ * @param configuredRemoteName - User-configured remote name (empty string for auto-detect)
+ * @returns The selected remote
+ * @throws Error if no suitable GitHub remote is found
+ */
+function findGitHubRemote(remotes: RemoteWithRefs[], configuredRemoteName: string): RemoteWithRefs {
+    // If user configured a specific remote name, try to use it
+    if (configuredRemoteName) {
+        const configured = remotes.find(r => r.name === configuredRemoteName);
+        if (configured && configured.refs.fetch) {
+            return configured;
+        }
+        throw new Error(`Configured remote '${configuredRemoteName}' not found`);
+    }
+    
+    // Auto-detect: filter to GitHub remotes only
+    const githubRemotes = remotes.filter(r => 
+        r.refs.fetch && r.refs.fetch.match(/github\.com[:/]/)
+    );
+    
+    if (githubRemotes.length === 0) {
+        throw new Error('No GitHub remotes found');
+    }
+    
+    // If only one GitHub remote, use it
+    if (githubRemotes.length === 1) {
+        return githubRemotes[0];
+    }
+    
+    // Multiple GitHub remotes: prefer 'origin', then 'upstream'
+    const origin = githubRemotes.find(r => r.name === 'origin');
+    if (origin) {
+        return origin;
+    }
+    
+    const upstream = githubRemotes.find(r => r.name === 'upstream');
+    if (upstream) {
+        return upstream;
+    }
+    
+    // Fall back to first GitHub remote
+    return githubRemotes[0];
+}
+
+/**
  * Extracts GitHub repository information from a file's Git repository.
  * 
  * @param filePath - Absolute path to the file in the Git repository
  * @returns Promise resolving to GitHub repository information
- * @throws Error if not in a Git repository, no origin remote found, or remote is not GitHub
+ * @throws Error if not in a Git repository, no GitHub remote found, or remote is not GitHub
  */
 async function getGitHubInfo(filePath: string): Promise<GitHubInfo> {
     const git: SimpleGit = simpleGit(path.dirname(filePath));
@@ -31,17 +79,20 @@ async function getGitHubInfo(filePath: string): Promise<GitHubInfo> {
     }
     
     const remotes: RemoteWithRefs[] = await git.getRemotes(true);
-    const origin: RemoteWithRefs | undefined = remotes.find((r: RemoteWithRefs) => r.name === 'origin');
-    
-    if (!origin || !origin.refs.fetch) {
-        throw new Error('No origin remote found');
+    if (remotes.length === 0) {
+        throw new Error('No git remotes found');
     }
     
-    const remoteUrl: string = origin.refs.fetch;
+    // Get configured remote name (empty string means auto-detect)
+    const config = vscode.workspace.getConfiguration('ghlink');
+    const configuredRemoteName = config.get<string>('remoteName', 'origin');
+    
+    const remote = findGitHubRemote(remotes, configuredRemoteName);
+    const remoteUrl: string = remote.refs.fetch!;
     const match: RegExpMatchArray | null = remoteUrl.match(/github\.com[:/]([^/]+)\/(.+?)(\.git)?$/);
     
     if (!match) {
-        throw new Error('Remote is not a GitHub repository');
+        throw new Error(`Remote '${remote.name}' is not a GitHub repository`);
     }
     
     const owner: string = match[1];
